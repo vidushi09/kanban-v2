@@ -1,5 +1,5 @@
 const config = {
-    apiBaseUrl: "http://localhost:5000", // Default to localhost for development
+    apiBaseUrl: "https://kanban-v2.onrender.com", // Default to localhost for development
   };
   
 export default config;
