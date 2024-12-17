@@ -279,7 +279,7 @@ const handleAddColumn = async () => {
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="container mx-auto px-6 py-8">
         <header className="mb-8 flex justify-between items-center">
-          <h1 className="text-4xl font-bold text-gray-800">Task Board</h1>
+          <h1 className="text-4xl font-bold text-gray-800">Kanban Board</h1>
           <UserInfo user={user} logout={handleLogout} />
         </header>
 
