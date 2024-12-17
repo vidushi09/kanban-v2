@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import Card from "./Card";
-import { PencilIcon, TrashIcon, CheckIcon } from "@heroicons/react/24/solid"; // Import Heroicons
+import { PencilIcon, TrashIcon, CheckIcon, PlusIcon } from "@heroicons/react/24/solid";
 
 const Column = ({ column, onEditColumn, onDeleteColumn, onAddCard, onEditCard, onDeleteCard }) => {
   const [isAddingCard, setIsAddingCard] = useState(false);
@@ -32,36 +32,51 @@ const Column = ({ column, onEditColumn, onDeleteColumn, onAddCard, onEditCard, o
     }
   };
 
+  // Determine column color based on its title or position
+  const getColumnColor = () => {
+    const colors = {
+      'Todo': 'from-blue-100 to-blue-200',
+      'In Progress': 'from-yellow-100 to-yellow-200',
+      'Done': 'from-green-100 to-green-200'
+    };
+    return colors[column.title] || 'from-gray-100 to-gray-200';
+  };
+
   return (
-    <div className="column bg-gray-100 p-4 rounded-lg w-64 m-2 shadow-lg flex flex-col">
-      <div className="flex justify-between items-center mb-4">
+    <div className={`column bg-gradient-to-br ${getColumnColor()} p-5 rounded-2xl w-72 m-3 shadow-xl 
+      transform transition-all duration-300 hover:scale-105 hover:shadow-2xl`}>
+      <div className="flex justify-between items-center mb-4 border-b pb-3 border-gray-300/50">
         {isEditingColumn ? (
           <input
             type="text"
             value={columnName}
             onChange={(e) => setColumnName(e.target.value)}
-            className="p-2 border border-gray-300 rounded w-48 text-lg font-medium"
+            className="p-2 border border-gray-300 rounded-md w-48 text-lg font-medium 
+            focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         ) : (
-          <h2 className="text-xl font-semibold text-gray-700">{column.title}</h2>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-wider">{column.title}</h2>
         )}
-        <div className="flex space-x-2">
+        <div className="flex space-x-1">
           <button
             onClick={() => setIsEditingColumn(!isEditingColumn)}
-            className="text-yellow-500 p-1 rounded hover:bg-yellow-200 transition"
+            className="text-yellow-600 p-2 rounded-full hover:bg-yellow-100 transition"
+            title="Edit Column"
           >
             <PencilIcon className="h-5 w-5" />
           </button>
           <button
             onClick={() => onDeleteColumn(column._id)}
-            className="text-red-500 p-1 rounded hover:bg-red-200 transition"
+            className="text-red-600 p-2 rounded-full hover:bg-red-100 transition"
+            title="Delete Column"
           >
             <TrashIcon className="h-5 w-5" />
           </button>
           {isEditingColumn && (
             <button
               onClick={handleColumnNameChange}
-              className="text-green-500 p-1 rounded hover:bg-green-200 transition"
+              className="text-green-600 p-2 rounded-full hover:bg-green-100 transition"
+              title="Save Column Name"
             >
               <CheckIcon className="h-5 w-5" />
             </button>
@@ -74,7 +89,7 @@ const Column = ({ column, onEditColumn, onDeleteColumn, onAddCard, onEditCard, o
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className="mt-4 space-y-2 flex-1 overflow-y-auto"
+            className="mt-4 space-y-3 flex-1 overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
           >
             {column.cards.map((card, index) => (
               <Card
@@ -91,53 +106,65 @@ const Column = ({ column, onEditColumn, onDeleteColumn, onAddCard, onEditCard, o
       </Droppable>
 
       {isAddingCard ? (
-        <div className="add-card-form bg-white p-4 rounded-lg shadow-lg mt-4">
+        <div className="add-card-form bg-white p-5 rounded-xl shadow-lg mt-4 space-y-3 border border-gray-200">
           <input
             type="text"
             placeholder="Card Title"
             value={newCard.title}
             onChange={(e) => setNewCard({ ...newCard, title: e.target.value })}
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           <textarea
             placeholder="Description"
             value={newCard.description}
             onChange={(e) => setNewCard({ ...newCard, description: e.target.value })}
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-gray-300 rounded-md min-h-[100px] focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          <input
-            type="date"
-            value={newCard.dueDate}
-            onChange={(e) => setNewCard({ ...newCard, dueDate: e.target.value })}
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
-          />
-          <select
-            value={newCard.priority}
-            onChange={(e) => setNewCard({ ...newCard, priority: e.target.value })}
-            className="w-full p-2 mb-4 border border-gray-300 rounded"
-          >
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-          <div className="flex justify-between">
-            <button onClick={handleAddCard} className="bg-green-500 text-white p-2 rounded-lg shadow-md hover:bg-green-600 transition">
-              Save
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              type="date"
+              value={newCard.dueDate}
+              onChange={(e) => setNewCard({ ...newCard, dueDate: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <select
+              value={newCard.priority}
+              onChange={(e) => setNewCard({ ...newCard, priority: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="Low">Low Priority</option>
+              <option value="Medium">Medium Priority</option>
+              <option value="High">High Priority</option>
+            </select>
+          </div>
+          <div className="flex justify-between space-x-2">
+            <button 
+              onClick={handleAddCard} 
+              className="flex-1 bg-green-500 text-white p-2 rounded-lg shadow-md 
+              hover:bg-green-600 transition flex items-center justify-center space-x-2"
+            >
+              <CheckIcon className="h-5 w-5" />
+              <span>Save Card</span>
             </button>
             <button
               onClick={() => setIsAddingCard(false)}
-              className="bg-red-500 text-white p-2 rounded-lg shadow-md hover:bg-red-600 transition"
+              className="flex-1 bg-red-500 text-white p-2 rounded-lg shadow-md 
+              hover:bg-red-600 transition flex items-center justify-center space-x-2"
             >
-              Cancel
+              <TrashIcon className="h-5 w-5" />
+              <span>Cancel</span>
             </button>
           </div>
         </div>
       ) : (
         <button
           onClick={() => setIsAddingCard(true)}
-          className="bg-blue-500 text-white p-2 rounded-lg mt-4 w-full hover:bg-blue-600 transition"
+          className="bg-blue-500 text-white p-3 rounded-lg mt-4 w-full 
+          hover:bg-blue-600 transition flex items-center justify-center space-x-2 
+          shadow-md hover:shadow-lg"
         >
-          + Add Card
+          <PlusIcon className="h-5 w-5" />
+          <span>Add New Card</span>
         </button>
       )}
     </div>

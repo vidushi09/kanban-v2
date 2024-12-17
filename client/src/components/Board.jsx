@@ -7,6 +7,7 @@ import UserInfo from "./UserInfo";
 import AddColumnForm from "./AddColumnForm";
 import CardModal from "./CardModal";
 import config from '../config';
+import BoardHeader from "./BoardHeader";
 
 export default function Board() {
   const [board, setBoard] = useState(null);
@@ -278,18 +279,11 @@ const handleAddColumn = async () => {
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="container mx-auto px-6 py-8">
-        <header className="mb-8 flex justify-between items-center">
+        {/* <header className="mb-8 flex justify-between items-center">
           <h1 className="text-4xl font-bold text-gray-800">Kanban Board</h1>
           <UserInfo user={user} logout={handleLogout} />
-        </header>
-
-        <div className="flex justify-between items-center mb-8">
-          <AddColumnForm 
-            newColumn={newColumn} 
-            setNewColumn={setNewColumn} 
-            handleAddColumn={handleAddColumn}
-          />
-        </div>
+        </header> */}
+        <BoardHeader user={user} logout={handleLogout} />
 
         <div className="flex space-x-4 overflow-x-auto">
           {board.columns.map((column) => (
@@ -303,6 +297,13 @@ const handleAddColumn = async () => {
               onDeleteCard={handleDeleteCard}
             />
           ))}
+          <div className="flex justify-between items-center mb-8">
+          <AddColumnForm 
+            newColumn={newColumn} 
+            setNewColumn={setNewColumn} 
+            handleAddColumn={handleAddColumn}
+          />
+        </div>
         </div>
 
         {isEditingCard && (
